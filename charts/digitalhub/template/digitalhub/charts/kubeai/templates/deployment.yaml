@@ -1,0 +1,80 @@
+---
+# Source: digitalhub/charts/kubeai/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeai
+  labels:
+    helm.sh/chart: kubeai-0.22.1
+    app.kubernetes.io/name: kubeai
+    app.kubernetes.io/instance: digitalhub
+    app.kubernetes.io/version: "v0.22.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubeai
+      app.kubernetes.io/instance: digitalhub
+  template:
+    metadata:
+      annotations:
+        # Recreate Pods on update of ConfigMap b/c hot reload is not supported.
+        checksum/config: 71bfe338d3c1e8e9f0a79fff4cdbc0228fc30e6e1b3efa27a2d410bf27f7b149
+      labels:
+        helm.sh/chart: kubeai-0.22.1
+        app.kubernetes.io/name: kubeai
+        app.kubernetes.io/instance: digitalhub
+        app.kubernetes.io/version: "v0.22.1"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: kubeai
+      securityContext:
+        runAsNonRoot: true
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: kubeai
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          image: "ghcr.io/kubeai-project/kubeai:v0.22.1"
+          imagePullPolicy: IfNotPresent
+          args:
+            []
+          command:
+            - /app/manager
+          env:
+          - name: CONFIG_PATH
+            value: "/app/config/system.yaml"
+          # Configure kubeai to only manage objects in its own namespace.
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 120
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {}
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+      volumes:
+        - name: config
+          configMap:
+            name: kubeai-config

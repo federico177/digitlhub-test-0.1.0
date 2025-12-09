@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: digitalhub-common-env
+data:
+  S3_BUCKET: {{ .Values.s3.bucket }}
+  AWS_ENDPOINT_URL: "{{ .Values.s3.protocol }}://{{ .Values.s3.endpoint }}:{{ .Values.s3.port }}"
+  DB_HOST: {{ .Values.databaseProvider.host }}
+  DB_PORT: {{ .Values.databaseProvider.port | quote }}
+  DB_DATABASE: {{ .Values.databaseProvider.database }}
+  DHCORE_ENDPOINT: http://{{ include "core.fullname" . }}:{{ .Values.service.port }}
+  DHCORE_ISSUER: http://{{ include "core.fullname" . }}:{{ .Values.service.port }}
+  DHCORE_DEFAULT_FILES_STORE: s3://{{ .Values.s3.bucket }}
+  AWS_REGION: {{ .Values.s3.region }}

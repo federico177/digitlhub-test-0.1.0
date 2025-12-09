@@ -1,0 +1,263 @@
+# Default values for aac.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  externalHostAddress: ""
+
+adminCreds:
+  password: "admin"
+  username: "admin"
+
+adminExistingCreds:
+  existingSecret: ""
+  passKey: ""
+  userKey: ""
+
+affinity: {}
+
+appCreds:
+  existingSecret: ""
+
+autoscaling:
+  enabled: false
+  maxReplicas: 100
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+bootstrap: 
+  - name: "digitalhub"
+    slug: "digitalhub"
+    public: true
+    identityProviders:
+      - provider: "tenantidentity"
+        authority: internal
+        name: internal
+        type: identity
+      - provider: tenantpassword
+        authority: password
+        name: password
+        type: identity
+    clientApps:
+      - clientId: "zxi1wbhsf3l94m34daa2msaxego922mq"
+        type: "oauth2"
+        name: "core"
+        realm: "digitalhub"
+        description: ""
+        configuration:
+            clientSecret: "zxi1wbhsf3l94m34daa2msaxego144ft"
+            conf:
+              authorizedGrantTypes:
+                - "authorization_code"
+                - "refresh_token"
+              applicationType: "web"
+              idTokenClaims: false
+              refresh_token_rotation: true
+              redirectUris:
+                - "http://digitalhub-core:8080/auth/code/oidc"
+              subjectType: "public"
+              authenticationMethods:
+                - "none"
+              firstParty: true
+              tokenType: "jwt"
+        scopes:
+          - "email"
+          - "profile"
+          - "openid"
+          - "user.roles.me"
+          - "offline_access"
+        resourceIds: [
+            ]
+        providers:
+          - tenantpassword
+        authorities: [
+            ]
+        spaceRoles: [
+            ]
+        hookWebUrls: {
+            }
+        roles: [
+            ]
+        hookFunctions: {}
+    users:
+      - uuid: lewoo3zwz9xm2tu40l9tadl37htjpagg
+        userId: tenantuserid
+        username: tenant
+        email: tenant@local.it
+        type: account:internal
+        authority: internal
+        provider: "tenantidentity"
+        name: tenant
+        surname: user
+        confirmed: true
+    credentials:
+      - type: credentials:password
+        authority: password
+        provider: tenantpassword
+        id: tenantcredentialid
+        username: tenant
+        userId: tenantuserid
+        password: password123
+
+bootstrapCreds:
+  existingSecret: ""
+
+# AAC Config Map
+config:
+  applicationExtUrl: "http://aac:8080"
+  bootstrap: file:///home/aac/bootstrap.yaml
+  bootstrapApply: "true"
+  cacheJwks: "public, max-age=3600, must-revalidate, no-transform"
+  jdbcDialect: org.hibernate.dialect.PostgreSQLDialect
+  jdbcDriver: org.postgresql.Driver
+  jdbcUrl: "jdbc:postgresql://aac-postgresql-cluster:5432/aacdb"
+  keystorePath: ""
+  logLevel: DEBUG
+  mailDebug: "false"
+  mailHost: ""
+  mailPort: 465
+  mailProtocol: smtps
+  mailSender: ""
+  mailTls: "false"
+
+fullnameOverride: ""
+
+image:
+  aacCommand1: "java"
+  aacCommand2: "org.springframework.boot.loader.JarLauncher"
+  aacCommand3: "-Dspring-boot.run.arguments=--logging.level.ROOT=DEBUG"
+  pullPolicy: IfNotPresent
+  repository: ghcr.io/scc-digitalhub/aac
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: 5.3.0-beta1
+
+imagePullSecrets: []
+
+ingress:
+  enabled: false
+  annotations: {}
+  className: ""
+  hosts:
+    - host: ""
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - ""
+      secretName: ""
+
+jdbcExistingCreds:
+  existingSecret: ""
+  passwordKey: ""
+  userKey: ""
+
+# Secrets
+
+# AAC default H2 database credentials. Do not set them if you are using an external one.
+jdbcH2creds:
+  password: ""
+  user: ""
+
+keystore:
+  keyName: ""
+  secretName: ""
+
+mailCreds:
+  existingSecret: ""
+  passwordKey: ""
+  usernameKey: ""
+
+mailSecret:
+  password: testPassword
+  user: test@user.it
+
+nameOverride: ""
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 805
+  runAsGroup: 805
+  runAsUser: 805
+
+postgresOperator:
+  adminUser: "aacadmin"
+  database: "aacdb"
+  installed: true
+  psqlClusterName: "aac-postgresql-cluster"
+  user: "aacuser"
+
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+secrets:
+  annotations: {}
+  ## If you wish to generate clientId and clientSecrets randomly in the bootstrap (for example, using {{ randAlphaNum 24 | nospace }})
+  ## make sure that you add pre-install hook to the annotations, so that the secrets won't get modified in case of a helm update.
+  ## Example:
+  # annotations:
+  #   "helm.sh/hook": pre-install
+  #   "helm.sh/hook-weight": "-5"
+  reflector:
+    enabled: false
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 805
+
+service:
+  httpNodePort: ""
+  port: "8080"
+  type: ClusterIP
+
+serviceAccount:
+  # Annotations to add to the service account
+  annotations: {}
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: aac
+
+tolerations: []
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:
+  - mountPath: /home/aac/bootstrap.yaml
+    name: aac-volume
+    subPath: bootstrap.yaml
+
+# Additional volumes on the output Deployment definition.
+volumes:
+  - name: aac-volume
+    secret:
+      secretName: aac-bootstrap-secret

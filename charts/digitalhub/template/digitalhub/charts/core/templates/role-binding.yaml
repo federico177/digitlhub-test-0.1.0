@@ -1,0 +1,26 @@
+---
+# Source: digitalhub/charts/core/templates/role-binding.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    helm.sh/chart: core-0.3.37
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: digitalhub
+    app.kubernetes.io/version: "0.14.0"
+    app.kubernetes.io/created-by: core-0.3.37
+    app.kubernetes.io/part-of: digitalhub-core
+    app.kubernetes.io/managed-by: Helm
+  name: core
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: core
+subjects:
+- kind: ServiceAccount
+  name: core
+  namespace: default

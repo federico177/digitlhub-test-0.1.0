@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+{{ if .Values.postgresOperator.installed -}}
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: {{ .Values.postgresOperator.psqlClusterName }}
+spec:
+  teamId: "aac"
+  volume:
+    size: 8Gi
+  numberOfInstances: 1
+  users:
+    {{ .Values.postgresOperator.adminUser }}:  # database owner
+    - superuser
+    - createdb
+    {{ .Values.postgresOperator.user }}: []
+  databases:
+    {{ .Values.postgresOperator.database }}: {{ .Values.postgresOperator.user }}
+  postgresql:
+    version: "15"
+{{- end }}

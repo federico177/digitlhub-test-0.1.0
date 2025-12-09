@@ -1,0 +1,109 @@
+---
+# Source: digitalhub/charts/core/templates/deployment.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digitalhub-core
+  labels:
+    helm.sh/chart: core-0.3.37
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: digitalhub
+    app.kubernetes.io/version: "0.14.0"
+    app.kubernetes.io/created-by: core-0.3.37
+    app.kubernetes.io/part-of: digitalhub-core
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: core
+      app.kubernetes.io/instance: digitalhub
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        checksum/config: c89fe937ccbf6f9b14a7183c3f52ba2fd6d67bba19b1d0080f18cd84ba3f0930
+        checksum/secret: 6addcc8b2a81e40d58fb901ce16b5c72f7fdf643a2ec5cf6ba1b3e325ec0ea73
+      labels:
+        helm.sh/chart: core-0.3.37
+        app.kubernetes.io/name: core
+        app.kubernetes.io/instance: digitalhub
+        app.kubernetes.io/version: "0.14.0"
+        app.kubernetes.io/created-by: core-0.3.37
+        app.kubernetes.io/part-of: digitalhub-core
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: core
+      securityContext:
+        fsGroup: 65532
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: core
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          image: "ghcr.io/scc-digitalhub/digitalhub-core:0.14.0"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: AWS_ACCESS_KEY
+              value: digitalhub
+            - name: AWS_SECRET_KEY
+              value: digitalhub
+            - name: JDBC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: coreuser.core-postgres-cluster.credentials.postgresql.acid.zalan.do
+                  key: username
+            - name: JDBC_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: coreuser.core-postgres-cluster.credentials.postgresql.acid.zalan.do
+                  key: password
+            - name: DH_AUTH_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aac-digitalhub-core-secret
+                  key: clientid
+            - name: JWT_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: core-auth-creds
+                  key: clientId
+            - name: JWT_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: core-auth-creds
+                  key: clientSecret
+          envFrom:
+          - configMapRef:
+              name: digitalhub-core
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          volumeMounts:
+            - name: lucene
+              mountPath: /lucene/
+      volumes:
+        - name: lucene
+          persistentVolumeClaim:
+            claimName: digitalhub-core-lucene

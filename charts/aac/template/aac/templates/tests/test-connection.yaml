@@ -1,0 +1,21 @@
+---
+# Source: aac/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "aac-test-connection"
+  labels:
+    helm.sh/chart: aac-0.1.17
+    app.kubernetes.io/name: aac
+    app.kubernetes.io/instance: aac
+    app.kubernetes.io/version: "5.3.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['aac:8080']
+  restartPolicy: Never

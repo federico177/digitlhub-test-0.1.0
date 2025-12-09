@@ -1,0 +1,6 @@
+---
+# Source: digitalhub/charts/kubeai/templates/securityContextConstraints.yaml
+# Create securityContextConstraints for the model pods if running on OpenShift.
+# This is needed because pods in OpenShift run with the restricted-v2 SCC by
+# default which do not allow a container to start with uid=0
+# (The model pod images run as the root user)

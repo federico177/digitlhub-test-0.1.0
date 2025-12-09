@@ -1,0 +1,134 @@
+{{ if .Values.bootstrap -}}
+realms:
+{{- $root := . -}}
+{{- range $realm := .Values.bootstrap }}
+  - name: {{ $realm.name }}
+    slug: {{ $realm.slug }}
+    public: {{ $realm.public }}
+    roles:
+      {{- toYaml $realm.roles | nindent 6 }}
+    identityProviders:
+      {{- toYaml $realm.identityProviders | nindent 6 }}
+    {{- if $realm.services }}
+    services:
+    {{- range $service := $realm.services }}
+      - serviceId: {{ tpl $service.serviceId $root }}
+        realm: {{ $realm.name }}
+        name: {{ $service.name }}
+        description: {{ $service.description }}
+        namespace: {{ $service.namespace }}
+        {{- if $service.scopes }}
+        scopes:
+        {{- range $scope := $service.scopes }}
+          - scope: {{ $scope.scope }}
+            name: {{ $scope.name }}
+            description: {{ $scope.description }}
+            resourceId: {{ $scope.resourceId }}
+            type: {{ $scope.type }}
+            {{- if $scope.audience }}
+            audience:
+            {{- range $scope.audience }}
+              - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if $scope.claims }}
+            audience:
+            {{- range $scope.claims }}
+              - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if $scope.approvalRoles }}
+            audience:
+            {{- range $scope.approvalRoles }}
+              - {{ . }}
+            {{- end }}
+            {{- end }}
+            approvalRequired: {{ $scope.approvalRequired }}
+            approvalAny: {{ $scope.approvalAny }}
+            userScope: {{ $scope.userScope }}
+            clientScope: {{ $scope.clientScope }}
+            id: {{ $scope.id }}
+        {{- if $service.claimMapping }}
+        claimMapping:
+          {{- toYaml $service.claimMapping | nindent 10 }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if $realm.clientApps }}
+    clientApps:
+    {{- range $clientApp := $realm.clientApps }}
+      - clientId: {{ tpl $clientApp.clientId $root }}
+        type: {{ $clientApp.type }}
+        name: {{ $clientApp.name }}
+        {{- if $clientApp.realm }}
+        realm: {{ $realm.name }}
+        {{- end }}
+        description: {{ $clientApp.description }}
+        configuration:
+            {{- if $clientApp.configuration.clientSecret }}
+            clientSecret: {{ tpl $clientApp.configuration.clientSecret $root }}
+            {{- end }}
+            {{- toYaml $clientApp.configuration.conf | nindent 12 }}
+        {{- if $clientApp.scopes }}
+        scopes:
+        {{- range $clientApp.scopes }}
+          - {{ . }}
+        {{- end }}
+        {{- end }}
+        {{- if $clientApp.resourceIds }}
+        resourceIds:
+        {{- range $clientApp.resourceIds }}
+          - {{ . }}
+        {{- end }}
+        {{- end }}
+        {{- if $clientApp.providers }}
+        providers:
+        {{- range $clientApp.providers }}
+          - {{ . }}
+        {{- end }}
+        {{- end }}
+        authorities: [
+            ]
+        spaceRoles: [
+            ]
+        hookWebUrls: {
+            }
+        roles: [
+            ]
+        {{- if $clientApp.hookFunctions }}
+        hookFunctions:
+          {{- toYaml $clientApp.hookFunctions | nindent 10 }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if $realm.users }}
+    users:
+    {{- range $user := $realm.users }}
+      - uuid: {{ $user.uuid }}
+        userId: {{ $user.userId }}
+        username: {{ $user.username }}
+        email: {{ $user.email }}
+        type: {{ $user.type }}
+        authority: {{ $user.authority }}
+        provider: {{ $user.provider }}
+        name: {{ $user.name }}
+        surname: {{ $user.surname }}
+        confirmed: {{ $user.confirmed }}
+    {{- end }}
+    {{- end }}
+    {{- if $realm.credentials }}
+    credentials:
+    {{- range $credential := $realm.credentials }}
+      - type: {{ $credential.type }}
+        authority: {{ $credential.authority }}
+        provider: {{ $credential.provider }}
+        username: {{ $credential.username }}
+        userId: {{ $credential.userId }}
+        password: {{ $credential.password }}
+        id: {{ $credential.id }}
+    {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

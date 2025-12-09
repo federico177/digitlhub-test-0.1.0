@@ -1,0 +1,63 @@
+---
+# Source: digitalhub/charts/postgres-operator/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: postgres-operator
+    helm.sh/chart: postgres-operator-1.11.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: digitalhub
+  name: digitalhub-postgres-operator
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres-operator
+      app.kubernetes.io/instance: digitalhub
+  template:
+    metadata:
+      annotations:
+        checksum/config: 0a3bda41f663b26e5e8f09650573cd7f4704067f54f78164c2d4686337ccfc12
+      labels:
+        app.kubernetes.io/name: postgres-operator
+        app.kubernetes.io/instance: digitalhub
+    spec:
+      serviceAccountName: digitalhub-postgres-operator
+      containers:
+      - name: postgres-operator
+        image: "registry.opensource.zalan.do/acid/postgres-operator:v1.11.0"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_OPERATOR_CONFIGURATION_OBJECT
+          value: digitalhub-postgres-operator
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 250Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      affinity:
+        {}
+      nodeSelector:
+        {}
+      tolerations:
+        []

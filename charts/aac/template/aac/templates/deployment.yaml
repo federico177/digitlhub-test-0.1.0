@@ -1,0 +1,104 @@
+---
+# Source: aac/templates/deployment.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aac
+  labels:
+    helm.sh/chart: aac-0.1.17
+    app.kubernetes.io/name: aac
+    app.kubernetes.io/instance: aac
+    app.kubernetes.io/version: "5.3.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: aac
+      app.kubernetes.io/instance: aac
+  template:
+    metadata:
+      annotations:
+        checksum/config: 0f7687ff0a43bb1c6d70d1710bc7704f58ddb27ef2f95b06a7cf7f864001ef83
+        checksum/secret: 08da380ad4a5b77e55ceb98321b93ce4ab54003624cf6e67f639e8af7b0e237a
+      labels:
+        helm.sh/chart: aac-0.1.17
+        app.kubernetes.io/name: aac
+        app.kubernetes.io/instance: aac
+        app.kubernetes.io/version: "5.3.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: aac
+      securityContext:
+        fsGroup: 805
+        runAsGroup: 805
+        runAsUser: 805
+      containers:
+        - name: aac
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            runAsNonRoot: true
+            runAsUser: 805
+          image: "ghcr.io/scc-digitalhub/aac:5.3.0-beta1"
+          command: [java, org.springframework.boot.loader.JarLauncher, -Dspring-boot.run.arguments=--logging.level.ROOT=DEBUG]
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MAIL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: aac-mail-secret
+                  key: jdbc-user
+            - name: MAIL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: aac-mail-secret
+                  key: jdbc-password
+            - name: JDBC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: aacadmin.aac-postgresql-cluster.credentials.postgresql.acid.zalan.do
+                  key: username
+            - name: JDBC_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: aacadmin.aac-postgresql-cluster.credentials.postgresql.acid.zalan.do
+                  key: password
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: aac-admin-secret
+                  key: username
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: aac-admin-secret
+                  key: password
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /home/aac/bootstrap.yaml
+              name: aac-volume
+              subPath: bootstrap.yaml
+          envFrom:
+          - configMapRef:
+              name: aac
+      volumes:
+        - name: aac-volume
+          secret:
+            secretName: aac-bootstrap-secret

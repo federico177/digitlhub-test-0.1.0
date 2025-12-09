@@ -1,0 +1,29 @@
+---
+# Source: digitalhub/charts/core/templates/service.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: digitalhub-core
+  labels:
+    helm.sh/chart: core-0.3.37
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: digitalhub
+    app.kubernetes.io/version: "0.14.0"
+    app.kubernetes.io/created-by: core-0.3.37
+    app.kubernetes.io/part-of: digitalhub-core
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+      nodePort: 30180
+  selector:
+    app.kubernetes.io/name: core
+    app.kubernetes.io/instance: digitalhub

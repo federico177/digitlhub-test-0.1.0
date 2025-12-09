@@ -1,0 +1,25 @@
+---
+# Source: aac/templates/configmap.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aac
+data:
+  JDBC_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+  JDBC_DRIVER: org.postgresql.Driver
+  JDBC_URL: jdbc:postgresql://aac-postgresql-cluster:5432/aacdb
+  MAIL_HOST: 
+  MAIL_PORT: "465"
+  MAIL_PROTOCOL: smtps
+  MAIL_TLS: "false"
+  MAIL_SENDER: 
+  MAIL_DEBUG: "false"
+  BOOTSTRAP_APPLY: "true"
+  BOOTSTRAP: file:///home/aac/bootstrap.yaml
+  LOG_LEVEL: DEBUG
+  APPLICATION_EXT_URL: http://aac:8080
+  APPLICATION_EMAIL:

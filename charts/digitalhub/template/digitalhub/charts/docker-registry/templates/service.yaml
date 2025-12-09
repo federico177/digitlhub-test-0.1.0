@@ -1,0 +1,23 @@
+---
+# Source: digitalhub/charts/docker-registry/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: digitalhub-docker-registry
+  namespace: default
+  labels:
+    app: docker-registry
+    chart: docker-registry-2.3.0
+    release: digitalhub
+    heritage: Helm
+spec:
+  type: NodePort
+  ports:
+    - port: 5000
+      protocol: TCP
+      name: http-5000
+      targetPort: 5000
+      nodePort: 30150
+  selector:
+    app: docker-registry
+    release: digitalhub

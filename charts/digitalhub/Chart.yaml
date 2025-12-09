@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+apiVersion: v2
+name: digitalhub
+description: The Digital Hub is an open-source platform for interoperability of data and services, built by integrating several open-source projects to manage, elaborate, expose and serve data through modern standards.
+type: application
+home: "https://github.com/scc-digitalhub/digitalhub/tree/main/charts/digitalhub"
+maintainers:
+  - name: ffais
+    url: https://github.com/ffais
+  - name: calcagiara
+    url: https://github.com/Calcagiara
+version: "0.14.0"
+appVersion: "0.14.0"
+dependencies:
+- name: argo-workflows
+  version: "0.45.1"
+  repository: https://argoproj.github.io/argo-helm
+  condition: argo-workflows.enabled
+- name: core
+  version: "0.3.37"
+  repository: https://scc-digitalhub.github.io/digitalhub/
+  condition: core.enabled
+- name: docker-registry
+  version: "2.3.0"
+  repository: "https://twuni.github.io/docker-registry.helm"
+  condition: docker-registry.enabled
+- name: seaweedfs         #storage component
+  version: "4.0.393"
+  repository: https://seaweedfs.github.io/seaweedfs/helm
+  condition: seaweedfs.enabled
+- name: postgres-operator       #db postgres 
+  version: "1.11.0"
+  repository: "https://opensource.zalando.com/postgres-operator/charts/postgres-operator"
+  condition: postgres-operator.enabled
+  tags:
+    - operator
+- name: template-controller
+  version: "0.2.5"
+  repository: https://kluctl.github.io/charts
+  condition: template-controller.enabled
+  tags:
+    - operator
+- name: kubeai
+  version: "0.22.1"
+  repository: https://www.kubeai.org
+  condition: kubeai.enabled

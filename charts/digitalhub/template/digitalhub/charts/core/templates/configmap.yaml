@@ -1,0 +1,78 @@
+---
+# Source: digitalhub/charts/core/templates/configmap.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: digitalhub-core
+data:
+  DH_ENDPOINT: "http://192.168.49.2:30180"
+  K8S_NAMESPACE: default
+  JDBC_PLATFORM: postgresql
+  JDBC_URL: jdbc:postgresql://core-postgres-cluster:5432/core
+  JDBC_DRIVER: org.postgresql.Driver
+  DH_CONFIG_COMMON_SECRETS: digitalhub-common-creds
+  DH_CONFIG_COMMON_MAPS: digitalhub-common-env
+  LOG_LEVEL: INFO
+  RUNTIME_DBT_IMAGE: ghcr.io/scc-digitalhub/digitalhub-sdk-wrapper-dbt/wrapper-dbt:0.14.0
+  RUNTIME_KFP_IMAGE: ghcr.io/scc-digitalhub/digitalhub-sdk-wrapper-kfp/wrapper-kfp:0.14.0
+  RUNTIME_HERA_IMAGE: ghcr.io/scc-digitalhub/digitalhub-sdk-wrapper-hera/wrapper-hera:0.14.0
+  RUNTIME_PYTHON_IMAGE_3_9: ghcr.io/scc-digitalhub/digitalhub-serverless/python-runtime:3.9-0.14.0
+  RUNTIME_PYTHON_IMAGE_3_10: ghcr.io/scc-digitalhub/digitalhub-serverless/python-runtime:3.10-0.14.0
+  RUNTIME_PYTHON_IMAGE_3_11: ghcr.io/scc-digitalhub/digitalhub-serverless/python-runtime:3.11-0.14.0
+  RUNTIME_PYTHON_IMAGE_3_12: ghcr.io/scc-digitalhub/digitalhub-serverless/python-runtime:3.12-0.14.0
+  RUNTIME_HUGGINGFACE_SERVE_IMAGE: kserve/huggingfaceserver:v0.14.0
+  DH_AUTH_BASIC_USER: coreuser
+  DH_AUTH_BASIC_PASSWORD: corepwd
+  DH_AUTH_JWT_CLAIM: roles
+  DH_AUTH_OIDC_ISSUER_URI: http://aac:8080
+  DH_AUTH_OIDC_SCOPE: openid,email,profile,user.roles.me,offline_access
+  DH_AUTH_JWT_USERNAME: preferred_username
+  IMAGE_REGISTRY: 192.168.49.2:30150
+  BUILDER_IMAGE_PREFIX: default
+  IMAGE_REGISTRY_SECRET: 
+  BUILDER_FRAMEWORK: kaniko
+  KANIKO_IMAGE: gcr.io/kaniko-project/executor:latest
+  
+  
+  DH_CORS_ORIGINS: ""
+  JWT_KEYSTORE_PATH: "/etc/keystore/keystore.jwks"
+  JWT_KEYSTORE_KID: ""
+  JWT_ACCESS_TOKEN_DURATION: "43200"
+  JWT_REFRESH_TOKEN_DURATION: "86400"
+  S3_CREDENTIALS_PROVIDER: "true"
+  AWS_DEFAULT_REGION: us-east-1
+  FILES_DEFAULT_STORE: s3://datalake
+  S3_ENDPOINT_URL: http://seaweedfs-s3:8888
+  S3_BUCKET: datalake
+  K8S_INIT_IMAGE: "ghcr.io/scc-digitalhub/digitalhub-core-builder-tool:eff0a84f"
+  K8S_ENABLE_METRICS: "false"
+  K8S_ENABLE_LOGS: "true"
+  K8S_SEC_DISABLE_ROOT: "true"
+  K8S_RESOURCE_CPU_DEFAULT: "100m"
+  K8S_RESOURCE_CPU_LIMIT: ""
+  K8S_RESOURCE_MEM_DEFAULT: "256Mi"
+  K8S_RESOURCE_MEM_LIMIT: ""
+  K8S_RESOURCE_GPU_KEY: "nvidia.com/gpu"
+  K8S_SERVICE_TYPE: "NodePort"
+  K8S_JOB_DEADLINE: "604800"
+  K8S_JOB_SUSPEND: "false"
+  K8S_IMAGE_PULL_POLICY: "IfNotPresent"
+  K8S_RESOURCE_EPHEMERAL_STORAGE_CLASS: ""
+  K8S_RESOURCE_EPHEMERAL_LIMIT: ""
+  K8S_RESOURCE_EPHEMERAL_DEFAULT: ""
+  K8S_RESOURCE_PVC_STORAGE_CLASS: ""
+  K8S_RESOURCE_PVC_LIMIT: ""
+  K8S_RESOURCE_PVC_DEFAULT: ""
+  K8S_RESOURCE_WORKFLOW_STORAGE_CLASS: ""
+  K8S_RESOURCE_WORKFLOW_ACCESS_MODE: "ReadWriteMany"
+  RUNTIME_KUBEAI_ENDPOINT: "http://kubeai:80"
+  ARGOWORKFLOWS_ARTIFACTS_CONFIGMAP: artifact-repositories
+  ARGOWORKFLOWS_ARTIFACTS_KEY: artifact-repository
+  ARGOWORKFLOWS_SERVICE_ACCOUNT: argo-workflow
+  ARGOWORKFLOWS_USER: "8877"
+  LUCENE_INDEX_PATH: "/lucene/"
+  LUCENE_REINDEX: "always"

@@ -1,0 +1,15 @@
+---
+# Source: digitalhub/charts/argo-workflows/templates/controller/workflow-controller-sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-workflow-controller
+  namespace: "default"
+  labels:
+    helm.sh/chart: argo-workflows-0.45.1
+    app.kubernetes.io/name: argo-workflows-workflow-controller
+    app.kubernetes.io/instance: digitalhub
+    app.kubernetes.io/component: workflow-controller
+    app: workflow-controller
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: argo-workflows

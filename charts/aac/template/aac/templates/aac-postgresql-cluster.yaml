@@ -1,0 +1,24 @@
+---
+# Source: aac/templates/aac-postgresql-cluster.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: aac-postgresql-cluster
+spec:
+  teamId: "aac"
+  volume:
+    size: 8Gi
+  numberOfInstances: 1
+  users:
+    aacadmin:  # database owner
+    - superuser
+    - createdb
+    aacuser: []
+  databases:
+    aacdb: aacuser
+  postgresql:
+    version: "15"

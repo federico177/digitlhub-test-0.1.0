@@ -1,0 +1,181 @@
+---
+# Source: digitalhub/charts/seaweedfs/templates/filer-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: seaweedfs-filer
+  namespace: default
+  labels:
+    app.kubernetes.io/name: seaweedfs
+    helm.sh/chart: seaweedfs-4.0.393
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: digitalhub
+    app.kubernetes.io/component: filer
+spec:
+  serviceName: seaweedfs-filer
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: seaweedfs
+      app.kubernetes.io/instance: digitalhub
+      app.kubernetes.io/component: filer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: seaweedfs
+        helm.sh/chart: seaweedfs-4.0.393
+        app.kubernetes.io/instance: digitalhub
+        app.kubernetes.io/component: filer
+      annotations:
+        checksum/s3config: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+    spec:
+      restartPolicy: Always
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: seaweedfs
+                  app.kubernetes.io/instance: digitalhub
+                  app.kubernetes.io/component: filer
+              topologyKey: kubernetes.io/hostname
+      
+      serviceAccountName: "seaweedfs" # for deleting statefulset pods after migration
+      terminationGracePeriodSeconds: 60
+      enableServiceLinks: false
+      containers:
+        - name: seaweedfs
+          image: chrislusf/seaweedfs:3.93
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: WEED_MYSQL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-seaweedfs-db
+                  key: user
+                  optional: true
+            - name: WEED_MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-seaweedfs-db
+                  key: password
+                  optional: true
+            - name: SEAWEEDFS_FULLNAME
+              value: "seaweedfs"
+            - name: WEED_FILER_BUCKETS_FOLDER
+              value: "/buckets"
+            - name: WEED_FILER_OPTIONS_RECURSIVE_DELETE
+              value: "false"
+            - name: WEED_LEVELDB2_ENABLED
+              value: "true"
+            - name: WEED_MYSQL_CONNECTION_MAX_IDLE
+              value: "5"
+            - name: WEED_MYSQL_CONNECTION_MAX_LIFETIME_SECONDS
+              value: "600"
+            - name: WEED_MYSQL_CONNECTION_MAX_OPEN
+              value: "75"
+            - name: WEED_MYSQL_DATABASE
+              value: "sw_database"
+            - name: WEED_MYSQL_ENABLED
+              value: "false"
+            - name: WEED_MYSQL_HOSTNAME
+              value: "mysql-db-host"
+            - name: WEED_MYSQL_INTERPOLATEPARAMS
+              value: "true"
+            - name: WEED_MYSQL_PORT
+              value: "3306"
+            - name: WEED_CLUSTER_DEFAULT
+              value: "sw"
+            - name: WEED_CLUSTER_SW_FILER
+              value: "seaweedfs-filer-client.seaweedfs:8888"
+            - name: WEED_CLUSTER_SW_MASTER
+              value: "seaweedfs-master.seaweedfs:9333"
+          command:
+            - "/bin/sh"
+            - "-ec"
+            - |
+              exec /usr/bin/weed \
+              -logdir=/logs \
+              -v=1 \
+              filer \
+              -port=8888 \
+              -metricsPort=9327 \
+              -dirListLimit=100000 \
+              -defaultReplicaPlacement=000 \
+              -ip=${POD_IP} \
+              -ip.bind=0.0.0.0 \
+              -s3 \
+              -s3.port=8333 \
+              -s3.allowEmptyFolder=false \
+              -s3.config=/etc/sw/seaweedfs_s3_config \
+              -master=${SEAWEEDFS_FULLNAME}-master-0.${SEAWEEDFS_FULLNAME}-master.default:9333 \
+          volumeMounts:
+            - name: seaweedfs-filer-log-volume
+              mountPath: "/logs/"
+            - name: config-users
+              mountPath: /etc/sw
+              readOnly: true
+            - name: data-filer
+              mountPath: /data
+            
+          ports:
+            - containerPort: 8888
+              name: swfs-filer
+            - containerPort: 9327
+              name: metrics
+            - containerPort: 18888
+              #name: swfs-filer-grpc
+            - containerPort: 8333
+              name: swfs-s3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8888
+              scheme: 
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            successThreshold: 1
+            failureThreshold: 100
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8888
+              scheme: 
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 10
+      volumes:
+        - name: seaweedfs-filer-log-volume
+          hostPath:
+            path: /storage/logs/seaweedfs/filer
+            type: DirectoryOrCreate
+        - name: data-filer
+          hostPath:
+            path: /storage/filer_store
+            type: DirectoryOrCreate
+        - name: db-schema-config-volume
+          configMap:
+            name: seaweedfs-db-init-config
+        - name: config-users
+          secret:
+            defaultMode: 420
+            secretName: seaweed-s3-secret
+        
+      nodeSelector:
+        kubernetes.io/arch: amd64

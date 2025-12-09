@@ -1,0 +1,90 @@
+---
+# Source: digitalhub/charts/seaweedfs/templates/post-install-bucket-hook.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "digitalhub-bucket-hook"
+  labels:
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/instance: "digitalhub"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "digitalhub"
+      labels:
+        app.kubernetes.io/managed-by: "Helm"
+        app.kubernetes.io/instance: "digitalhub"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: post-install-job
+        image: chrislusf/seaweedfs:3.93
+        env:
+          - name: WEED_CLUSTER_DEFAULT
+            value: "sw"
+          - name: WEED_CLUSTER_SW_MASTER
+            value: "seaweedfs-master.default:9333"
+          - name: WEED_CLUSTER_SW_FILER
+            value: "seaweedfs-filer-client.default:8888"
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: SEAWEEDFS_FULLNAME
+            value: "seaweedfs"
+        command:
+          - "/bin/sh"
+          - "-ec"
+          - |
+            wait_for_service() {
+              local url=$1
+              local max_attempts=60  # 5 minutes total (5s * 60)
+              local attempt=1
+              
+              echo "Waiting for service at $url..."
+              while [ $attempt -le $max_attempts ]; do
+                if wget -q --spider "$url" >/dev/null 2>&1; then
+                  echo "Service at $url is up!"
+                  return 0
+                fi
+                echo "Attempt $attempt: Service not ready yet, retrying in 5s..."
+                sleep 5
+                attempt=$((attempt + 1))
+              done
+              echo "Service at $url failed to become ready within 5 minutes"
+              exit 1
+            }
+            wait_for_service "http://$WEED_CLUSTER_SW_MASTER/cluster/status"
+            wait_for_service "http://$WEED_CLUSTER_SW_FILER/"
+            exec /bin/echo \
+            "s3.bucket.create --name datalake" |\
+            /usr/bin/weed shell
+            exec /bin/echo \
+            "s3.bucket.create --name argo" |\
+            /usr/bin/weed shell
+        volumeMounts:
+          - name: config-users
+            mountPath: /etc/sw
+            readOnly: true
+        ports:
+          - containerPort: 9333
+            name: swfs-master
+          - containerPort: 19333
+            #name: swfs-master-grpc
+      volumes:
+        - name: config-users
+          secret:
+            defaultMode: 420
+            secretName: seaweed-s3-secret

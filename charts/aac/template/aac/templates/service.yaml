@@ -1,0 +1,27 @@
+---
+# Source: aac/templates/service.yaml
+# SPDX-FileCopyrightText: © 2025 DSLab - Fondazione Bruno Kessler
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: aac
+  labels:
+    helm.sh/chart: aac-0.1.17
+    app.kubernetes.io/name: aac
+    app.kubernetes.io/instance: aac
+    app.kubernetes.io/version: "5.3.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+      
+  selector:
+    app.kubernetes.io/name: aac
+    app.kubernetes.io/instance: aac
