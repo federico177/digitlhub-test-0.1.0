@@ -26,7 +26,13 @@ jobs:
       - name: Run Helm Lint
         run: |
           helm lint ./charts/aac
+      - name: Run Helm Lint
+        run: |
+          helm lint ./charts/core
 
       - name: Run Helm Template (Validate YAML)
         run: |
           helm template my-release ./charts/aac > /dev/null
+      - name: Run Helm Template (Validate YAML)
+        run: |
+          helm template my-release ./charts/core > /dev/null    
