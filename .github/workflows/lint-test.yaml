@@ -25,8 +25,8 @@ jobs:
 
       - name: Run Helm Lint
         run: |
-          helm lint ./digitlhub-test-0.1.0/charts/aac
+          helm lint ./charts/aac
 
       - name: Run Helm Template (Validate YAML)
         run: |
-          helm template my-release ./digitlhub-test-0.1.0/charts/aac > /dev/null
+          helm template my-release ./charts/aac > /dev/null
