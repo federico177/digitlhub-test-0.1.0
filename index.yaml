@@ -76,4 +76,24 @@ entries:
     urls:
     - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/aac-0.1.19/aac-0.1.19.tgz
     version: 0.1.19
-generated: "2025-12-09T13:57:34.020683098Z"
+  core:
+  - apiVersion: v2
+    appVersion: 0.14.0
+    created: "2025-12-09T14:12:01.145599297Z"
+    description: DigitalHub Core is part of the DigitalHub platform, and depends on
+      external components to support the complete set of functionalities.
+    digest: 208cd6abc9ffae2eac0cd59edb475acd3784174dc9e9321c74747fb79ec7e06b
+    home: https://github.com/scc-digitalhub/digitalhub/tree/main/charts/core
+    maintainers:
+    - name: ffais
+      url: https://github.com/ffais
+    - name: calcagiara
+      url: https://github.com/Calcagiara
+    name: core
+    sources:
+    - https://github.com/scc-digitalhub/digitalhub-core
+    type: application
+    urls:
+    - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/core-0.3.38/core-0.3.38.tgz
+    version: 0.3.38
+generated: "2025-12-09T14:12:01.145618272Z"
