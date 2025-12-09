@@ -3,6 +3,21 @@ entries:
   aac:
   - apiVersion: v2
     appVersion: 5.3.0
+    created: "2025-12-09T12:58:04.053140603Z"
+    description: A Helm chart for Kubernetes
+    digest: 21048e97a9e222f9694017c45ddd5f82c858a123196bc55776fed985e52d045b
+    maintainers:
+    - name: ffais
+      url: https://github.com/ffais
+    - name: calcagiara
+      url: https://github.com/Calcagiara
+    name: aac
+    type: application
+    urls:
+    - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/aac-0.1.21/aac-0.1.21.tgz
+    version: 0.1.21
+  - apiVersion: v2
+    appVersion: 5.3.0
     created: "2025-12-09T12:38:13.159532617Z"
     description: A Helm chart for Kubernetes
     digest: 7c6408921d24f06c567037d2065239c64d0cefcba9fb62d4b56eff442d574f90
@@ -16,4 +31,4 @@ entries:
     urls:
     - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/aac-0.1.19/aac-0.1.19.tgz
     version: 0.1.19
-generated: "2025-12-09T12:38:13.159539811Z"
+generated: "2025-12-09T12:58:04.053148949Z"
