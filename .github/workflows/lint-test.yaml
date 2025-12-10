@@ -23,9 +23,6 @@ jobs:
         with:
           version: v3.14.0
 
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.7.0
-
       - name: Add dependency chart repos and Update Dependencies
         run: |
           helm repo add postgres-operator https://opensource.zalando.com/postgres-operator/charts/postgres-operator
@@ -38,7 +35,10 @@ jobs:
           helm lint ./charts/core
           helm template my-release ./charts/aac
           helm template my-release ./charts/core 
-          
+        
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.7.0
+        
       - name: Create kind cluster
         uses: helm/kind-action@v1.12.0
 
