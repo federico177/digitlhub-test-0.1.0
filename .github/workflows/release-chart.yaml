@@ -24,7 +24,6 @@ jobs:
 
       - name: Add dependency chart repos
         run: |
-          helm repo add docker-registry https://helm.twun.io
           helm repo add postgres-operator https://opensource.zalando.com/postgres-operator/charts/postgres-operator
 
       - name: Update Chart Dependencies (Download Sub-Charts)
