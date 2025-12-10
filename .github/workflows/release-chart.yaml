@@ -22,6 +22,20 @@ jobs:
         with:
           version: v3.14.0
 
+      - name: Add dependency chart repos
+        run: |
+          helm repo add docker-registry https://helm.twun.io
+          helm repo add postgres-operator https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+
+      - name: Update Chart Dependencies (Download Sub-Charts)
+        run: |
+          for chart_dir in charts/*; do
+            if [ -d "$chart_dir" ]; then
+              echo "Updating dependencies for: $chart_dir"
+              helm dependency update "$chart_dir"
+            fi
+          done
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
