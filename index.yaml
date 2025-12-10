@@ -94,6 +94,25 @@ entries:
   core:
   - apiVersion: v2
     appVersion: 0.14.0
+    created: "2025-12-10T13:33:37.023986047Z"
+    description: DigitalHub Core is part of the DigitalHub platform, and depends on
+      external components to support the complete set of functionalities.
+    digest: 3e3ad13543f96011dc31afba391be156f5b0a3bc8de14d884c03a35d060ae957
+    home: https://github.com/scc-digitalhub/digitalhub/tree/main/charts/core
+    maintainers:
+    - name: ffais
+      url: https://github.com/ffais
+    - name: calcagiara
+      url: https://github.com/Calcagiara
+    name: core
+    sources:
+    - https://github.com/scc-digitalhub/digitalhub-core
+    type: application
+    urls:
+    - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/core-0.3.42/core-0.3.42.tgz
+    version: 0.3.42
+  - apiVersion: v2
+    appVersion: 0.14.0
     created: "2025-12-10T12:48:29.281757644Z"
     description: DigitalHub Core is part of the DigitalHub platform, and depends on
       external components to support the complete set of functionalities.
@@ -149,4 +168,4 @@ entries:
     urls:
     - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/core-0.3.38/core-0.3.38.tgz
     version: 0.3.38
-generated: "2025-12-10T12:48:29.281786227Z"
+generated: "2025-12-10T13:33:37.024015713Z"
