@@ -21,11 +21,16 @@ jobs:
         uses: azure/setup-helm@v4
         with:
           version: v3.14.0
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
 
       - name: Add dependency chart repos
         run: |
           helm repo add postgres-operator https://opensource.zalando.com/postgres-operator/charts/postgres-operator
-
+          helm repo add digitalhub https://scc-digitalhub.github.io/digitalhub/
       - name: Update Chart Dependencies (Download Sub-Charts)
         run: |
           for chart_dir in charts/*; do
