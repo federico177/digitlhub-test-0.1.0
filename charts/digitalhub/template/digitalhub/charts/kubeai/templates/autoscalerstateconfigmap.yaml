@@ -1,6 +1,0 @@
----
-# Source: digitalhub/charts/kubeai/templates/autoscalerstateconfigmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kubeai-autoscaler-state

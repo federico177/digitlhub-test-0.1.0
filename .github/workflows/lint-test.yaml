@@ -49,7 +49,10 @@ jobs:
 
       - name: Run chart-testing (install)
         run: ct install \ 
+                --release-name digitalhub \
                 --charts ./charts/digitalhub \
                 --charts ./charts/aac \
                 --set-files values-demo=./charts/digitalhub/values-demo.yaml
+      - name: Chart-test
+        run: helm test digitalhub --timeout 60m
              

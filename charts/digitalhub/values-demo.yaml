@@ -485,7 +485,7 @@ core:
     #  core.s3.protocol -- Protocol of your S3 instance (http/https)
     protocol: *s3Protocol
     #  core.s3.publicUrl -- Public url of your S3 instance
-    publicUrl: "http://seaweedfs-s3:8888"
+    publicUrl: "http://seaweedfs-s3:8333"
     #  core.s3.region -- Region used by your S3 instance
     region: us-east-1
     #  core.s3.secretKey -- Explicit declaration of the Secret key of your S3 instance.
@@ -784,6 +784,14 @@ platformPackages:
   preRelease: false
   #  platformPackages.tag --
   tag: ""
+
+platformTests:
+  - s0-crud
+  - s1-etl
+  - s2-dbt
+  - s3-scikit-learn
+  - s4-mlflow
+  - s5-custom-ml-model
 
 #  postgres-operator -- Postgres operator configuration
 postgres-operator:
