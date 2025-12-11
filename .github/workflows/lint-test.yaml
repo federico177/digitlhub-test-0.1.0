@@ -49,6 +49,7 @@ jobs:
 
       - name: Run chart-testing (install)
         run: ct install \ 
-                --charts ./charts/aac --charts ./charts/digitalhub \
-                --helm-extra-args --values ./charts/digitalhub/values-demo.yaml
+                --charts ./charts/digitalhub \
+                --charts ./charts/aac \
+                --set-files values-demo=./charts/digitalhub/values-demo.yaml
              
