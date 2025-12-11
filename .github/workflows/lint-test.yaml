@@ -47,12 +47,21 @@ jobs:
       - name: Create kind cluster
         uses: helm/kind-action@v1.12.0
 
-      - name: Run chart-testing (install)
-        run: ct install \ 
-                --release-name digitalhub \
-                --charts ./charts/digitalhub \
-                --charts ./charts/aac \
-                --set-files values-demo=./charts/digitalhub/values-demo.yaml
+      # - name: Run chart-testing (install)
+      #   run: ct install \ 
+      #           --release-name digitalhub \
+      #           --charts ./charts/digitalhub \
+      #           --charts ./charts/aac \
+      #           --set-files values-demo=./charts/digitalhub/values-demo.yaml
+      
+      - name: Deploy DigitalHub chart to Kind cluster
+        run: |
+          helm install digitalhub ./charts/digitalhub \
+            --values ./charts/digitalhub/values-demo.yaml \
+            --timeout 15m
+          helm install aac ./charts/aac \
+            --timeout 10m
+
       - name: Chart-test
         run: helm test digitalhub --timeout 60m
              
