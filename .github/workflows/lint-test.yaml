@@ -22,6 +22,17 @@ jobs:
         uses: azure/setup-helm@v4
         with:
           version: v3.14.0
+      - name: Add dependency chart repos and Update Dependencies
+        run: |
+          helm repo add postgres-operator https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+          helm repo add argo https://argoproj.github.io/argo-helm
+          helm repo add digitalhub-charts https://scc-digitalhub.github.io/digitalhub/ 
+          helm repo add docker-registry https://twuni.github.io/docker-registry.helm
+          helm repo add seaweedfs https://seaweedfs.github.io/seaweedfs/helm
+          helm repo add kluctl https://kluctl.github.io/charts
+          helm repo add kubeai https://www.kubeai.org
+          helm dependency update ./charts/aac
+          helm dependency update ./charts/digitalhub
 
       - name: Run Helm Lint and Template Checks
         run: |
