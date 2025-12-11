@@ -37,9 +37,9 @@ jobs:
       - name: Run Helm Lint and Template Checks
         run: |
           helm lint ./charts/aac
-          helm lint ./charts/core
+          helm lint ./charts/digitalhub
           helm template my-release ./charts/aac
-          helm template my-release ./charts/core 
+          helm template my-release ./charts/digitalhub 
         
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.7.0
