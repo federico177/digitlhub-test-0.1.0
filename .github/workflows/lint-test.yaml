@@ -37,4 +37,7 @@ jobs:
         uses: helm/kind-action@v1.12.0
 
       - name: Run chart-testing (install)
-        run: ct install --charts ./charts/aac --charts ./charts/core
+        run: ct install\ 
+                --charts ./charts/aac --charts ./charts/digitalhub\
+                --values ./charts/digitalhub/values-demo.yaml\
+             
