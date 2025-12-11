@@ -62,6 +62,9 @@ jobs:
           helm install aac ./charts/aac \
             --timeout 10m
           kubectl get pods
+          sleep 60s
+          kubectl get pods
+          kubectl get secrets
 
       - name: Chart-test
         run: helm test digitalhub --timeout 60m
