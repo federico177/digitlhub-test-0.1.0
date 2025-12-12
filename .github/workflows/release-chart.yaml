@@ -27,10 +27,15 @@ jobs:
         with:
           node-version: 'latest'
 
-      - name: Add dependency chart repos
+      - name: Aggiungi i Repository Helm esterni
         run: |
-          helm repo add postgres-operator https://opensource.zalando.com/postgres-operator/charts/postgres-operator
-          helm repo add digitalhub https://scc-digitalhub.github.io/digitalhub/
+          helm repo add argo-helm https://argoproj.github.io/argo-helm
+          helm repo add docker-registry https://twuni.github.io/docker-registry.helm
+          helm repo add seaweedfs https://seaweedfs.github.io/seaweedfs/helm
+          helm repo add kluctl https://kluctl.github.io/charts
+          helm repo add kubeai https://www.kubeai.org
+          helm repo update
+          
       - name: Update Chart Dependencies (Download Sub-Charts)
         run: |
           for chart_dir in charts/*; do
