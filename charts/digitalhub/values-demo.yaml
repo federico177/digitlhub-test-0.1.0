@@ -789,6 +789,7 @@ platformTests:
   - s0-crud
   - s1-etl
   - s2-dbt
+  - s3-scikit-learn
   - s4-mlflow
   - s5-custom-ml-model
 
