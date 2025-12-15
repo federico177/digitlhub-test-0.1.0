@@ -361,6 +361,57 @@ entries:
   digitalhub:
   - apiVersion: v2
     appVersion: 0.14.0
+    created: "2025-12-15T08:50:51.899369439Z"
+    dependencies:
+    - condition: argo-workflows.enabled
+      name: argo-workflows
+      repository: https://argoproj.github.io/argo-helm
+      version: 0.45.1
+    - condition: core.enabled
+      name: core
+      repository: https://scc-digitalhub.github.io/digitalhub/
+      version: 0.3.37
+    - condition: docker-registry.enabled
+      name: docker-registry
+      repository: https://twuni.github.io/docker-registry.helm
+      version: 2.3.0
+    - condition: seaweedfs.enabled
+      name: seaweedfs
+      repository: https://seaweedfs.github.io/seaweedfs/helm
+      version: 4.0.393
+    - condition: postgres-operator.enabled
+      name: postgres-operator
+      repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+      tags:
+      - operator
+      version: 1.11.0
+    - condition: template-controller.enabled
+      name: template-controller
+      repository: https://kluctl.github.io/charts
+      tags:
+      - operator
+      version: 0.2.5
+    - condition: kubeai.enabled
+      name: kubeai
+      repository: https://www.kubeai.org
+      version: 0.22.1
+    description: The Digital Hub is an open-source platform for interoperability of
+      data and services, built by integrating several open-source projects to manage,
+      elaborate, expose and serve data through modern standards.
+    digest: 364b1166257220bc1faa400e19eb53b1750e611746f58fbeb07623dde4fb285a
+    home: https://github.com/scc-digitalhub/digitalhub/tree/main/charts/digitalhub
+    maintainers:
+    - name: ffais
+      url: https://github.com/ffais
+    - name: calcagiara
+      url: https://github.com/Calcagiara
+    name: digitalhub
+    type: application
+    urls:
+    - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/digitalhub-0.14.8/digitalhub-0.14.8.tgz
+    version: 0.14.8
+  - apiVersion: v2
+    appVersion: 0.14.0
     created: "2025-12-12T09:28:16.430158778Z"
     dependencies:
     - condition: argo-workflows.enabled
@@ -410,4 +461,4 @@ entries:
     urls:
     - https://github.com/federico177/digitlhub-test-0.1.0/releases/download/digitalhub-0.14.7/digitalhub-0.14.7.tgz
     version: 0.14.7
-generated: "2025-12-12T09:28:16.430214352Z"
+generated: "2025-12-15T08:50:51.899399034Z"
